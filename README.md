@@ -102,7 +102,10 @@ C  = Outputs if the 9th bit is on(Carry Out);
 NC = Outputs if the 9th bit is NOT on(Carry Out);
 
 
+
 There are 5 Writing Types:
+
+
 
 RRR, Example: ADD R1 R2 R3       (R1 + R2, Output into R3);
 
@@ -117,6 +120,8 @@ BRH, Example: BRH Z 14           (Jump to Line 14 if the last Number has the Zer
 
 
 That is all to the Pseudo Code EXCEPT for one Thing and that is the RESTRICTIONS:
+
+
 
 You can only do 1024 Instructions;
 
@@ -133,6 +138,7 @@ For BRH you can only first use a maximum of 2 Bits for the Flags and then 10 Bit
 For N you can do whatever in hell you wanna do after the Operation;
 
 For RSH you Need to first put in your wanted shifted Register and then 0(Register 0) and then your Output;
+
 
 EXAMPLE PROGRAM:
 See the Example Program in the named: "EXAMPLE_PseudoCODE.txt"
