@@ -153,6 +153,11 @@ I have attached it in this Folder already but I don't know if this one works so 
 Also the World attached to here is the Instruction Memory I made myself and the Instruction Memory this Generator is based off from.
 
 
+All New Pull requests are welcome! if you want to add more Instructions or Codes or whatever makes the Project more efficient Then you can!
+
+But please still Credit Me as the Original Creator
+
+
 This project is licensed under the \[CC BY-NC 4.0 License](https://creativecommons.org/licenses/by-nc/4.0/).  
 
 You may use, remix, and share it with credit, but not for commercial purposes.
