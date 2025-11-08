@@ -61,34 +61,60 @@ And Our OPERATIONS are These:
 
 
 NOP = No Operation;
+
 HLT = Halt the Program;
+
 ADD = Add two Registers together and Output to one Register;
+
 SUB = subtract two Registers and Output to one Register;
+
 NOR = Or two Registers and Invert the Output and Output to one Register;
+
 AND = And two Registers and Output to one Register;
+
 XOR = Xor two Registers and Output to one Register;
+
 RSH = divide 1 Register by 2 and Output into one Register;
+
 LDI = Load a Number into a Register;
+
 ADI = Add a Number to an existing Register;
+
 JMP = Jump to the specified Line;
+
 BRH = Jump to the specified Line IF a specific Flag is triggered;
+
 CAL = Jump to a specified Line and Return with the RET function;
+
 RET = Returns to the last CAL function Line +1;
+
+
 
 We Also as seen up have FLAGS:
 
+
 Z  = Outputs if the 8 bit Output is Zero;
+
 NZ = Outputs if the 8 bit Output is NOT Zero;
+
 C  = Outputs if the 9th bit is on(Carry Out);
+
 NC = Outputs if the 9th bit is NOT on(Carry Out);
+
 
 There are 5 Writing Types:
 
 RRR, Example: ADD R1 R2 R3       (R1 + R2, Output into R3);
+
 RI, Example: LDI R1 34           (Output to R1, Number 34);
+
 J, Example: JMP 21               (Jump to Line 21);
+
 N, Example: HLT                  (Halt the Program);
+
 BRH, Example: BRH Z 14           (Jump to Line 14 if the last Number has the Zero Flag);
+
+
 
 That is all to the Pseudo Code EXCEPT for one Thing and that is the RESTRICTIONS:
 
