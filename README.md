@@ -35,7 +35,7 @@ Folder Structure:
 
 Now this is also an Instruction Manual so you know how this works in pseudo code:
 
-In this we use Registers and in this case we have These REGISTERS to use:
+In this we use Registers for the Register File and in this case we have These REGISTERS to use:
 
 R0  = 0;
 R1  = 1;
@@ -55,6 +55,10 @@ R14 = 14;
 R15 = 15;
 
 Whilst R0 is a Zero Register(Always Outputs 0)
+
+But for the Data Memory we have These Registers:
+
+Okay we just have all Registers from 0 to 255 I am too Lazy to writ all of them Right now
 
 And Our OPERATIONS are These:
 
@@ -88,6 +92,10 @@ CAL = Jump to a specified Line and Return with the RET function;
 
 RET = Returns to the last CAL function Line +1;
 
+LOD = Loads from the Register Pointed to into another Register + an Offset
+
+STR = Stores into the Register Pointed to a Number
+
 
 
 We Also as seen up have FLAGS:
@@ -103,19 +111,23 @@ NC = Outputs if the 9th bit is NOT on(Carry Out);
 
 
 
-There are 5 Writing Types:
+There are 7 Writing Types:
 
 
 
-RRR, Example: ADD R1 R2 R3       (R1 + R2, Output into R3);
+RRR, Example: ADD 1 2 3          (R1 + R2, Output into R3);
 
-RI, Example: LDI R1 34           (Output to R1, Number 34);
+RI, Example: LDI 1 34            (Output to R1, Number 34);
 
 J, Example: JMP 21               (Jump to Line 21);
 
 N, Example: HLT                  (Halt the Program);
 
 BRH, Example: BRH Z 14           (Jump to Line 14 if the last Number has the Zero Flag);
+
+LOD, Example: LOD 13 5 2         (Load from Data Memory the Register Pointed to by R13 into 5 BUT add to the Pointed Register Value 2);
+
+STR, Example: STR 13 45          (Store the Number 45 into the Pointed Register from R13)
 
 
 
@@ -126,6 +138,8 @@ That is all to the Pseudo Code EXCEPT for one Thing and that is the RESTRICTIONS
 You can only do 1024 Instructions;
 
 You can only have a maximum of 16 subprocesses using CAL;
+
+You can only have a maximum of 256(0-255) Registers in the Data Memory
 
 For RRR you can only use a maximum of 4 Bit Numbers;
 
@@ -141,7 +155,7 @@ For RSH you Need to first put in your wanted shifted Register and then 0(Registe
 
 
 EXAMPLE PROGRAM:
-See the Example Program in the named: "EXAMPLE_PseudoCODE.txt"
+See the Example Program in the file named: "EXAMPLE_PseudoCODE.txt"
 
 
 
