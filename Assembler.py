@@ -14,13 +14,14 @@ OPERATIONS = {
     "NOP": "0000", "HLT": "0001", "ADD": "0010", "SUB": "0011",
     "NOR": "0100", "AND": "0101", "XOR": "0110", "RSH": "0111",
     "LDI": "1000", "ADI": "1001", "JMP": "1010", "BRH": "1011",
-     "CAL": "1100", "RET": "1101"
+     "CAL": "1100", "RET": "1101", "LOD": "1110", "STR": "1111"
 }
 
 INSTRUCTION_FORMATS = {
     "NOP": "N", "HLT": "N", "ADD": "RRR", "SUB": "RRR", "NOR": "RRR",
     "AND": "RRR", "XOR": "RRR", "RSH": "RRR", "LDI": "RI", "ADI": "RI",
-    "JMP": "J", "BRH": "BRH", "CAL": "J", "RET": "N"
+    "JMP": "J", "BRH": "BRH", "CAL": "J", "RET": "N", "LOD" : "LOD",
+    "STR": "STR"
 }
 
 FLAGS = {
@@ -59,6 +60,15 @@ for line in lines:
         flag = FLAGS[tokens[1]]
         addr = format(int(tokens[2]), "010b")
         binary = OPERATIONS[opcode] + flag + addr
+    elif fmt == "LOD":
+        r_src = REGISTERS[tokens[1]] 
+        r_dest = REGISTERS[tokens[2]]  
+        offset = format(int(tokens[3]), "04b") 
+        binary = OPERATIONS[opcode] + r_src + r_dest + offset
+    elif fmt == "STR":
+        r_ptr = REGISTERS[tokens[1]]
+        value = format(int(tokens[2]), "08b")
+        binary = OPERATIONS[opcode] + r_ptr + value
     else:
         raise ValueError(f"Unknown instruction format: {opcode}")
     binary_instructions.append(binary)
