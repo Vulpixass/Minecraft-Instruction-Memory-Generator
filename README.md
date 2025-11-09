@@ -94,9 +94,9 @@ CAL = Jump to a specified Line and Return with the RET function;
 
 RET = Returns to the last CAL function Line +1;
 
-LOD = Loads from the Register Pointed to into another Register + an Offset
+LOD = Loads from the Register Pointed to into another Register + an 4 bit Offset(2s Complement)
 
-STR = Stores into the Register Pointed to + an Offset a Number from a Register
+STR = Stores into the Register Pointed to + an 4 bit Offset(2s Complement) a Number from a Register
 
 
 
