@@ -100,7 +100,8 @@ for i, line in enumerate(lines):
     elif fmt == "RRO":
         r_src = REGISTERS[tokens[1]] 
         r_dest = REGISTERS[tokens[2]]  
-        offset = format(int(tokens[3]), "04b") 
+        offset_val = int(tokens[3])
+        offset = format(offset_val & 0b1111, "04b")
         binary = OPERATIONS[opcode] + r_src + r_dest + offset
     
     else:
