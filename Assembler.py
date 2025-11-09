@@ -6,32 +6,56 @@ import mcschematic
 INPUT_FILE = "PseudoCODE.txt"
 OUTPUT_FILE = "memory_towers.schem"
 
-REGISTERS = {
-    str(i): format(i, "04b") for i in range(16)
-}
+PHASES = [
+    {"start": 0, "end": 15, "x": 74, "z": 2, "dir": "south"},
+    {"start": 16, "end": 255, "x": 7, "z": 0, "dir": "north"},
+    {"start": 256, "end": 527, "x": 37, "z": 0, "dir": "north"},
+    {"start": 528, "end": 1023, "x": 7, "z": 2, "dir": "south"},
+]
+
+REGISTERS = {str(i): format(i, "04b") for i in range(16)}
 
 OPERATIONS = {
     "NOP": "0000", "HLT": "0001", "ADD": "0010", "SUB": "0011",
     "NOR": "0100", "AND": "0101", "XOR": "0110", "RSH": "0111",
     "LDI": "1000", "ADI": "1001", "JMP": "1010", "BRH": "1011",
-     "CAL": "1100", "RET": "1101", "LOD": "1110", "STR": "1111"
+    "CAL": "1100", "RET": "1101", "LOD": "1110", "STR": "1111"
 }
 
 INSTRUCTION_FORMATS = {
     "NOP": "N", "HLT": "N", "ADD": "RRR", "SUB": "RRR", "NOR": "RRR",
     "AND": "RRR", "XOR": "RRR", "RSH": "RRR", "LDI": "RI", "ADI": "RI",
-    "JMP": "J", "BRH": "BRH", "CAL": "J", "RET": "N", "LOD" : "LOD",
-    "STR": "STR"
+    "JMP": "J", "BRH": "BRH", "CAL": "J", "RET": "N", "LOD": "RRO", "STR": "RRO"
 }
 
-FLAGS = {
-    "Z": "00", "NZ": "01", "C": "10", "NC": "11"
-}
+FLAGS = {"Z": "00", "NZ": "01", "C": "10", "NC": "11"}
 
 Y_LEVELS = [0, -2, -4, -6, -8, -10, -12, -14, -19, -21, -23, -25, -27, -29, -31, -33]
 
+# === Pre Process PseudoCODE.txt ===
+def preprocess_pseudo_code(input_path="PseudoCODE.txt", output_path="Filled_PseudoCODE.txt"):
+    try:
+        with open(input_path, "r") as infile:
+            lines = infile.readlines()
+
+        filled_lines = []
+        for i in range(1024):
+            if i < len(lines) and lines[i].strip():
+                filled_lines.append(lines[i].strip())
+            else:
+                filled_lines.append("NOP")
+
+        with open(output_path, "w") as outfile:
+            for line in filled_lines:
+                outfile.write(line + "\n")
+
+        print(f"Preprocessing complete. Filled {output_path} with 1024 lines.")
+    except Exception as e:
+        print(f"Error during preprocessing: {e}")
+
 # === Parse PseudoCODE ===
-with open(INPUT_FILE, "r") as f:
+preprocess_pseudo_code()
+with open("Filled_PseudoCODE.txt", "r") as f:
     lines = f.readlines()
 
 binary_instructions = []
@@ -53,78 +77,79 @@ for line in lines:
         binary = OPERATIONS[opcode] + r1 + imm
     elif fmt == "J":
         addr = format(int(tokens[1]), "010b")
-        binary = OPERATIONS[opcode] + addr
+        binary = OPERATIONS[opcode] + "00" + addr
     elif fmt == "N":
         binary = OPERATIONS[opcode] + "000000000000"
     elif fmt == "BRH":
         flag = FLAGS[tokens[1]]
         addr = format(int(tokens[2]), "010b")
         binary = OPERATIONS[opcode] + flag + addr
-    elif fmt == "LOD":
-        r_src = REGISTERS[tokens[1]] 
-        r_dest = REGISTERS[tokens[2]]  
-        offset = format(int(tokens[3]), "04b") 
+    elif fmt == "RRO":
+        r_src = REGISTERS[tokens[1]]
+        r_dest = REGISTERS[tokens[2]]
+        offset = format(int(tokens[3]), "04b")
         binary = OPERATIONS[opcode] + r_src + r_dest + offset
-    elif fmt == "STR":
-        r_ptr = REGISTERS[tokens[1]]
-        value = format(int(tokens[2]), "08b")
-        binary = OPERATIONS[opcode] + r_ptr + value
     else:
         raise ValueError(f"Unknown instruction format: {opcode}")
     binary_instructions.append(binary)
 
 # === Build schematic ===
 schem = mcschematic.MCSchematic()
-x, z = 74, 2
-x_phase2 = 7
-z_phase2 = 0
-x_phase3 = x_phase2 + 2 * 15 + 7
-z_phase3 = 0
-x_phase4 = 7
-z_phase4 = 2
-phase2_x_adds = phase3_x_adds = phase4_x_adds = 0
-schem.setBlock((0, -33, -1), "minecraft:stone_button[face=floor]")
-
+SLICE_WIDTH = 16
+TOWER_SPACING = 10
+PHASE_GAP_X = 7
+schem.setBlock((0, 0, 0), "minecraft:stone_button[face=floor]")
+# === Precompute repeater coordinates
+repeater_coords = set()
+tower_positions = []
 
 for addr, binary in enumerate(binary_instructions):
-    if addr < 16:
-        tower_x, tower_z = x, z
-        z += 10
-        direction = "south"
-    elif addr < 256:
-        tower_x, tower_z = x_phase2, z_phase2
-        z_phase2 += 10
-        direction = "north"
-        if z_phase2 > 150:
-            z_phase2 = 0
-            phase2_x_adds += 1
-            x_phase2 += 2
-            if phase2_x_adds == 15:
-                x_phase2 += 6
-    elif addr < 520:
-        tower_x, tower_z = x_phase3, z_phase3
-        z_phase3 += 10
-        direction = "north"
-        if z_phase3 > 150:
-            z_phase3 = 0
-            phase3_x_adds += 1
-            x_phase3 += 2
-    elif addr < 1024:
-        tower_x, tower_z = x_phase4, z_phase4
-        z_phase4 += 10
-        direction = "south"
-        if z_phase4 > 150:
-            z_phase4 = 2
-            phase4_x_adds += 1
-            x_phase4 += 6 if phase4_x_adds == 15 else 2
+    for phase in PHASES:
+        if phase["start"] <= addr <= phase["end"]:
+            slice_index = (addr - phase["start"]) // SLICE_WIDTH
+            tower_index = (addr - phase["start"]) % SLICE_WIDTH
+
+            gap = 0
+            if phase["start"] == 256 and slice_index >= 1:
+                gap = 5
+            elif phase["start"] == 528 and slice_index >= 16:
+                gap = 5
+
+            tower_x = phase["x"] + gap + slice_index * 2
+            tower_z = phase["z"] + tower_index * TOWER_SPACING
+            direction = phase["dir"]
+            break
+
+    tower_positions.append((addr, tower_x, tower_z, direction))
 
     for bit_index, bit in enumerate(binary):
-        y = Y_LEVELS[bit_index]
-        block = f"minecraft:repeater[facing={direction},powered=false]" if bit == "1" else "minecraft:air"
-        schem.setBlock((tower_x, y, tower_z), block)
+        if bit == "1":
+            y = Y_LEVELS[bit_index]
+            repeater_coords.add((tower_x, y, tower_z))
 
+# === Pass 1: Place gray wool, skipping repeater coords
+for addr, binary in enumerate(binary_instructions):
+    tower_x, tower_z, direction = tower_positions[addr][1:]
+    
+    if binary != "0000000000000000":
+        schem.setBlock((tower_x, Y_LEVELS[0] + 1, tower_z), "minecraft:lime_wool")
+
+    for bit_index in range(16):
+        y = Y_LEVELS[bit_index]
+        coord = (tower_x, y, tower_z)
+        if coord not in repeater_coords:
+            schem.setBlock(coord, "minecraft:gray_wool")
+
+# === Pass 2: Place repeaters
+for coord in repeater_coords:
+    x, y, z = coord
+    # Find direction from tower_positions
+    addr = next(i for i, (a, tx, tz, _) in enumerate(tower_positions) if tx == x and tz == z)
+    direction = tower_positions[addr][3]
+    schem.setBlock(coord, f"minecraft:repeater[facing={direction},powered=false]")
+            
 # === Save schematic ===
 schematics_dir = os.path.join(os.getenv("APPDATA"), ".minecraft", "schematics")
-schem.save(schematics_dir, OUTPUT_FILE.replace(".schem", ""), mcschematic.Version.JE_1_18_2)
+schem.save(schematics_dir, OUTPUT_FILE.replace(".schem", ""), mcschematic.Version.JE_1_21_5)
 print(f"✅ Saved as {OUTPUT_FILE}")
 input("Press Enter to exit...")

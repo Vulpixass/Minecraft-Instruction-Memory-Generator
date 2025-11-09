@@ -12,7 +12,7 @@ Youtube of Mattbatwings: https://www.youtube.com/@mattbatwings
 
 What this Program does:
 
-It takes in your Pseudo Code and turn it into a "memory\_towers.schem" file in whatever Directory you want in this Version of the program: "PseudoCODE to .schem, ADVANCED" by changing the Directory under: "Save schematic" or for the classic schematic Directory with this Version: "PseudoCODE to .schem"
+It takes in your Pseudo Code and turn it into a "memory\_towers.schem" file in whatever Directory you want in this Version of the program: "PseudoCODE to .schem, ADVANCED" by changing the Directory under: "Save schematic" or to the classic schematic Directory with this Version: "PseudoCODE to .schem"
 
 Setup:
 1. Install Python 3.10+
@@ -58,7 +58,9 @@ Whilst R0 is a Zero Register(Always Outputs 0)
 
 But for the Data Memory we have These Registers:
 
-Okay we just have all Registers from 0 to 255 I am too Lazy to writ all of them Right now
+Okay we just have all Registers from 0 to 255 I am too Lazy to write all of them Right now
+
+
 
 And Our OPERATIONS are These:
 
@@ -94,7 +96,7 @@ RET = Returns to the last CAL function Line +1;
 
 LOD = Loads from the Register Pointed to into another Register + an Offset
 
-STR = Stores into the Register Pointed to a Number
+STR = Stores into the Register Pointed to + an Offset a Number from a Register
 
 
 
@@ -126,9 +128,6 @@ N, Example: HLT                  (Halt the Program);
 BRH, Example: BRH Z 14           (Jump to Line 14 if the last Number has the Zero Flag);
 
 LOD, Example: LOD 13 5 2         (Load from Data Memory the Register Pointed to by R13 into 5 BUT add to the Pointed Register Value 2);
-
-STR, Example: STR 13 45          (Store the Number 45 into the Pointed Register from R13)
-
 
 
 That is all to the Pseudo Code EXCEPT for one Thing and that is the RESTRICTIONS:
