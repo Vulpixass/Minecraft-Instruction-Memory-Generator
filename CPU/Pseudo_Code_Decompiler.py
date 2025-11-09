@@ -33,7 +33,10 @@ OPERATIONS = {
     "ADI": "1001",
     "JMP": "1010",
     "BRH": "1011",
-    "CAL": "1100"
+    "CAL": "1100",
+    "RET": "1101",
+    "LOD": "1110",
+    "STR": "1111"
 }
 INSTRUCTION_FORMATS = {
     "NOP": "N",
@@ -48,7 +51,10 @@ INSTRUCTION_FORMATS = {
     "ADI": "RI",
     "JMP": "J",
     "BRH": "BRH",
-    "CAL": "J"
+    "CAL": "J",
+    "RET": "N",
+    "LOD": "RRO",
+    "STR": "RRO",
 }
 FLAGS = {
     "Z": "00",
@@ -91,6 +97,12 @@ for i, line in enumerate(lines):
         flag_mode = FLAGS[tokens[1]]
         addr = format(int(tokens[2]), '010b')
         binary = OPERATIONS[opcode] + flag_mode + addr
+    elif fmt == "RRO":
+        r_src = REGISTERS[tokens[1]] 
+        r_dest = REGISTERS[tokens[2]]  
+        offset = format(int(tokens[3]), "04b") 
+        binary = OPERATIONS[opcode] + r_src + r_dest + offset
+    
     else:
         raise ValueError(f"Unknown instruction format: {opcode}")
     
